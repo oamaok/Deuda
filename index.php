@@ -1,0 +1,5 @@
+<?php
+
+require_once "include/init.php";
+
+Database::query("");
