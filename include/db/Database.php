@@ -109,6 +109,14 @@ class Database {
         {
             exit(0);
         }
+        register_shutdown_function("Database::close");
+
         return Database::$mysqli;
+    }
+
+    public static function close()
+    {
+        if(Database::$mysqli)
+            Database::$mysqli->close();
     }
 } 
