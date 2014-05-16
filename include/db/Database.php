@@ -145,6 +145,8 @@ class Database {
         {
             exit(0);
         }
+        Database::$mysqli->set_charset("UTF-8");
+
         register_shutdown_function("Database::close");
 
         return Database::$mysqli;
