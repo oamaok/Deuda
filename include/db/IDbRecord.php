@@ -3,5 +3,5 @@
 interface IDbRecord {
     public function save();
     public function delete();
-    public function find($criteria = array());
+    public static function find($criteria = array());
 } 
