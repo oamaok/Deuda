@@ -73,6 +73,27 @@ class User implements IDbRecord {
         return $user;
     }
 
+    public static function findByUsername($username)
+    {
+        $record = Database::query("SELECT * FROM Users WHERE username = ?", $username);
+        if(!$record)
+            return null;
+        $record = $record[0];
+
+        $user = new User;
+
+        $user->id = $record["id"];
+        $user->username = $record["username"];
+        $user->password = $record["password"];
+        $user->firstName = $record["first_name"];
+        $user->lastName = $record["last_name"];
+        $user->passwordSalt = $record["password_salt"];
+        $user->createDate = $record["create_date"];
+        $user->authToken = $record["auth_token"];
+
+        return $user;
+    }
+
     public function getId()
     {
         return $this->id;
@@ -80,13 +101,22 @@ class User implements IDbRecord {
 
     public static function login($username, $password)
     {
+        $user = User::findByUsername($username);
 
+        if(!$user)
+            return null;
+
+        $passwordHash = $user->password;
+        $passwordSalt = $user->passwordSalt;
+        if(Auth::verifyPassword($password, $passwordHash, $passwordSalt))
+            return $user;
+        return null;
     }
 
     public static function register($username, $password, $firstName, $lastName)
     {
         if(Database::query("SELECT 1 FROM Users WHERE username = ?", $username))
-            return false;
+            return null;
 
         $user = new User;
         $user->username = $username;
@@ -96,7 +126,7 @@ class User implements IDbRecord {
         $user->lastName = $lastName;
 
         if(!$user->save())
-            return false;
+            return null;
 
         return $user;
     }
