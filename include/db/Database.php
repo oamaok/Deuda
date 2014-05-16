@@ -61,6 +61,9 @@ class Database {
                 case "string":
                     $type .= 's';
                     break;
+                case "NULL":
+                    $type .= 's';
+                    break;
                 case "double":
                     $type .= 'd';
                     break;
@@ -145,7 +148,7 @@ class Database {
         {
             exit(0);
         }
-        Database::$mysqli->set_charset("UTF-8");
+        Database::$mysqli->set_charset("utf8");
 
         register_shutdown_function("Database::close");
 
