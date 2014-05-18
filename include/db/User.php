@@ -3,21 +3,23 @@
 class User implements IDbRecord {
 
     private $id = -1;
-    public $username, $password, $firstName, $lastName, $passwordSalt, $createDate, $authToken;
+    public $username, $password, $firstName, $lastName, $passwordSalt, $createDate;
 
+    /**
+     * @return array|bool|int
+     */
     public function save()
     {
         if($this->id == -1)
         {
             $this->id = Database::query("INSERT INTO Users
                 (username, password, first_name, last_name, password_salt, create_date, auth_token)
-                VALUES (?, ?, ?, ?, ?, NOW(), ?)",
+                VALUES (?, ?, ?, ?, ?, NOW())",
                 $this->username,
                 $this->password,
                 $this->firstName,
                 $this->lastName,
-                $this->passwordSalt,
-                $this->authToken
+                $this->passwordSalt
             );
 
             $user = User::findById($this->id);
@@ -30,28 +32,34 @@ class User implements IDbRecord {
         {
             return Database::query("UPDATE Users SET
                 username = ?, password = ?, first_name = ?,
-                last_name = ?, password_salt = ?, auth_token = ?
+                last_name = ?, password_salt = ?
                 WHERE id = ?",
                 $this->username,
                 $this->password,
                 $this->firstName,
                 $this->lastName,
                 $this->passwordSalt,
-                $this->authToken,
                 $this->id
             );
         }
     }
 
+    /**
+     * @return bool
+     */
     public function delete()
     {
-
+        return !!Database::query("DELETE FROM Users WHERE id = ?", $this->id);
     }
 
     public static function find($criteria = array())
     {
     }
 
+    /**
+     * @param $id int
+     * @return null|User
+     */
     public static function findById($id)
     {
         $record = Database::query("SELECT * FROM Users WHERE id = ?", $id);
@@ -68,11 +76,14 @@ class User implements IDbRecord {
         $user->lastName = $record["last_name"];
         $user->passwordSalt = $record["password_salt"];
         $user->createDate = $record["create_date"];
-        $user->authToken = $record["auth_token"];
 
         return $user;
     }
 
+    /**
+     * @param $username string
+     * @return mixed
+     */
     public static function findByUsername($username)
     {
         $record = Database::query("SELECT * FROM Users WHERE username = ?", $username);
@@ -89,16 +100,25 @@ class User implements IDbRecord {
         $user->lastName = $record["last_name"];
         $user->passwordSalt = $record["password_salt"];
         $user->createDate = $record["create_date"];
-        $user->authToken = $record["auth_token"];
 
         return $user;
     }
 
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @param $username string
+     * @param $password string
+     * @return mixed
+     *
+     * Returns User object if successful, otherwise null.
+     */
     public static function login($username, $password)
     {
         $user = User::findByUsername($username);
@@ -113,6 +133,13 @@ class User implements IDbRecord {
         return null;
     }
 
+    /**
+     * @param $username string
+     * @param $password string
+     * @param $firstName string
+     * @param $lastName string
+     * @return mixed
+     */
     public static function register($username, $password, $firstName, $lastName)
     {
         if(Database::query("SELECT 1 FROM Users WHERE username = ?", $username))

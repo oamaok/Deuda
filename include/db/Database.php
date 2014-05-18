@@ -2,10 +2,11 @@
 
 class Database {
 
+    /** @var $mysqli mysqli */
     private static $mysqli;
 
     /**
-     * @return array|bool|int
+     * @return mixed
      *
      */
     public static function query()
@@ -16,9 +17,7 @@ class Database {
         {
             return false;
         }
-        /** @var $mysqli mysqli */
         $mysqli = Database::getMysqli();
-        $result = false;
 
         if($numArgs == 1)
         {
@@ -105,6 +104,10 @@ class Database {
         return $result;
     }
 
+    /**
+     * @param $stmt mysqli_stmt
+     * @return mixed
+     */
     private static function fetch($stmt)
     {
         $stmt->store_result();
@@ -133,6 +136,10 @@ class Database {
 
         return $result;
     }
+
+    /**
+     * @return mysqli
+     */
     private static function getMysqli()
     {
         if(Database::$mysqli)
@@ -155,12 +162,18 @@ class Database {
         return Database::$mysqli;
     }
 
+    /**
+     *
+     */
     public static function close()
     {
         if(Database::$mysqli)
             Database::$mysqli->close();
     }
 
+    /**
+     * @return string
+     */
     public static function lastError()
     {
         return Database::$mysqli->error;

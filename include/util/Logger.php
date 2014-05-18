@@ -3,6 +3,9 @@
 class Logger {
     private static $file;
 
+    /**
+     * @return int
+     */
     public static function log()
     {
         $args = func_get_args();
@@ -11,6 +14,9 @@ class Logger {
         return fputs(Logger::getFile(), date("[d.m.y H:i:s] ") . $message . "\n");
     }
 
+    /**
+     * @return mixed
+     */
     private static function getFile()
     {
         if(!Logger::$file)

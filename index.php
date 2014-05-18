@@ -2,6 +2,6 @@
 
 require_once "include/init.php";
 
-$test = Database::query("SELECT * FROM Users");
+$ret = User::register("oamaok", "ebin :D", "Teemu", "Pääkkönen");
 
-var_dump($test);
+var_dump(User::login("",""));
