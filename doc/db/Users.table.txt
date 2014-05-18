@@ -8,5 +8,4 @@
 | password      | varchar(128) | NO   |     | NULL    |                |
 | password_salt | varchar(128) | NO   |     | NULL    |                |
 | create_date   | datetime     | NO   |     | NULL    |                |
-| auth_token    | varchar(128) | YES  | UNI | NULL    |                |
 +---------------+--------------+------+-----+---------+----------------+

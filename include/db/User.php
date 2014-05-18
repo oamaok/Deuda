@@ -52,10 +52,6 @@ class User implements IDbRecord {
         return !!Database::query("DELETE FROM Users WHERE id = ?", $this->id);
     }
 
-    public static function find($criteria = array())
-    {
-    }
-
     /**
      * @param $id int
      * @return null|User
