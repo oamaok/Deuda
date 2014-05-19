@@ -25,7 +25,7 @@ class User implements IDbRecord {
             $user = User::findById($this->id);
             $this->id = $user->id;
             $this->createDate = $user->createDate;
-            var_dump($user);
+
             return $this->id;
         }
         else
@@ -77,7 +77,6 @@ class User implements IDbRecord {
      */
     public static function findById($id)
     {
-        echo $id;
         $record = Database::query("SELECT * FROM Users WHERE id = ?", $id);
         if(!$record)
             return null;
