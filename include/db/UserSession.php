@@ -13,7 +13,7 @@ class UserSession implements IDbRecord {
     {
         if($this->id == -1)
         {
-            $this->id = Database::query("INSERT INTO Users
+            $this->id = Database::query("INSERT INTO UserSessions
                 (user, token, session_only, expire_time,create_date)
                 VALUES (?, ?, ?, ?, NOW())",
                 $this->user,
@@ -30,7 +30,7 @@ class UserSession implements IDbRecord {
         }
         else
         {
-            return Database::query("UPDATE Users SET
+            return Database::query("UPDATE UserSessions SET
                 user = ?, token = ?, session_only = ?,
                 expire_time = ? WHERE id = ?",
                 $this->user,
@@ -68,7 +68,8 @@ class UserSession implements IDbRecord {
 
     public static function findByToken($token)
     {
-        $record = Database::query("SELECT * FROM UserSessions WHERE token = ?", $token);
+        $record = Database::query("SELECT * FROM UserSessions
+        WHERE token = ? AND (expire_time > NOW() OR session_only = 1)", $token);
         if(!$record)
             return null;
         $record = $record[0];
@@ -98,5 +99,30 @@ class UserSession implements IDbRecord {
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getUser()
+    {
+        return User::findById($this->user);
+    }
+
+    /**
+     * @param $user User
+     * @param $sessionOnly boolean
+     * @param null $expireTime int
+     * @return UserSession
+     */
+    public static function createForUser($user, $sessionOnly, $expireTime = null)
+    {
+        $session = new UserSession;
+        $session->user = $user->getId();
+        $session->token = Auth::generateSessionToken($user->passwordSalt);
+        $session->sessionOnly = $sessionOnly;
+        $session->expireTime = null;
+        if($expireTime)
+            $session->expireTime = CommonUtil::sqlTimeStamp($expireTime);
+        $session->save();
+
+        return $session;
     }
 } 

@@ -12,6 +12,12 @@ class CommonUtil {
         return $refs;
     }
 
+    /**
+     * @param $timestamp int
+     * @return string
+     *
+     * Converts UNIX timestamp into a format accepted by MySQL.
+     */
     public static function sqlTimeStamp($timestamp)
     {
         return date("Y-m-d H:i:s", $timestamp);

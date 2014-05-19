@@ -18,4 +18,10 @@ class Auth {
     {
         return Auth::hashPassword($password, $passwordSalt) == $passwordHash;
     }
+
+    public static function generateSessionToken($salt)
+    {
+        $hash = hash("sha256", $salt . microtime(true));
+        return $hash;
+    }
 } 
