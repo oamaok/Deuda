@@ -9,9 +9,9 @@ class Session {
     {
         if(!self::$sessionUser)
         {
-            if(!isset($_COOKIE[Config::SESSION_COOKIE]))
+            if(!Session::getSessionCookie())
                 return null;
-            $sessionToken = $_COOKIE[Config::SESSION_COOKIE];
+            $sessionToken = Session::getSessionCookie();
 
             $session = UserSession::findByToken($sessionToken);
             if(!$session)
@@ -49,13 +49,36 @@ class Session {
         return true;
     }
 
+    public static function logout()
+    {
+        if(!Session::getSessionUser())
+        {
+            Session::deleteSessionCookie();
+        }
+        $token = Session::getSessionCookie();
+        $session = UserSession::findByToken($token);
+        $session->delete();
+        Session::deleteSessionCookie();
+    }
     /**
      * @param $token
      * @param $expireTime
      * @return bool
      */
-    public static function setSessionCookie($token, $expireTime)
+    private static function setSessionCookie($token, $expireTime)
     {
         return setcookie(Config::SESSION_COOKIE, $token, $expireTime);
+    }
+
+    private static function getSessionCookie()
+    {
+        if(!isset($_COOKIE[Config::SESSION_COOKIE]))
+            return null;
+        return $_COOKIE[Config::SESSION_COOKIE];
+    }
+
+    private static function deleteSessionCookie()
+    {
+        return setcookie(Config::SESSION_COOKIE, null, -1);
     }
 }
