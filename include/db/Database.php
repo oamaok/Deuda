@@ -69,6 +69,9 @@ class Database {
                 case "integer":
                     $type .= 'i';
                     break;
+                case "boolean":
+                    $type .= 'i';
+                    break;
                 default:
                     return false;
                     break;
