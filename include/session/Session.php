@@ -54,6 +54,7 @@ class Session {
         if(!Session::getSessionUser())
         {
             Session::deleteSessionCookie();
+            return;
         }
         $token = Session::getSessionCookie();
         $session = UserSession::findByToken($token);
