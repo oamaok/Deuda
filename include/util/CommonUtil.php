@@ -11,4 +11,9 @@ class CommonUtil {
 
         return $refs;
     }
+
+    public static function sqlTimeStamp($timestamp)
+    {
+        return date("Y-m-d H:i:s", $timestamp);
+    }
 } 
