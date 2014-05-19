@@ -5,7 +5,7 @@ class Session {
 
     private static $sessionUser = null;
 
-    public static function getSessionUser()
+    public static function getUser()
     {
         if(!self::$sessionUser)
         {
@@ -51,7 +51,7 @@ class Session {
 
     public static function logout()
     {
-        if(!Session::getSessionUser())
+        if(!Session::getUser())
         {
             Session::deleteSessionCookie();
             return;
@@ -61,6 +61,7 @@ class Session {
         $session->delete();
         Session::deleteSessionCookie();
     }
+
     /**
      * @param $token
      * @param $expireTime
