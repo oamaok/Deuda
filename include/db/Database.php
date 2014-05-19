@@ -178,4 +178,14 @@ class Database {
     {
         return Database::$mysqli->error;
     }
+
+    public static function convertCase($columnName)
+    {
+        $columnName = str_replace("_", " ", $columnName);
+        $columnName = ucwords($columnName);
+        $columnName = str_replace(" ", "", $columnName);
+        $columnName = lcfirst($columnName);
+
+        return $columnName;
+    }
 } 

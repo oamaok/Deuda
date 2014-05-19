@@ -47,6 +47,25 @@ class UserSession implements IDbRecord {
 
     }
 
+    /**
+     * @param $record
+     * @return UserSession
+     */
+    public static function fromRecord($record)
+    {
+        $className = __CLASS__;
+        $object = new $className;
+
+        foreach($record as $key => $value)
+        {
+            $camelCaseColumn = Database::convertCase($key);
+            if(property_exists($object, $camelCaseColumn))
+                $object->$camelCaseColumn = $record[$key];
+        }
+
+        return $object;
+    }
+
     public static function findByToken($token)
     {
         $record = Database::query("SELECT * FROM UserSessions WHERE token = ?", $token);
@@ -58,14 +77,7 @@ class UserSession implements IDbRecord {
         if($token !=  $record["token"])
             return null;
 
-        $userSession = new UserSession;
-        $userSession->id = $record["id"];
-        $userSession->user = $record["user"];
-        $userSession->token = $record["token"];
-        $userSession->sessionOnly = $record["session_only"];
-        $userSession->createDate = $record["create_date"];
-
-        return $userSession;
+        return UserSession::fromRecord($record);
     }
 
     public static function findById($id)
@@ -75,14 +87,7 @@ class UserSession implements IDbRecord {
             return null;
         $record = $record[0];
 
-        $userSession = new UserSession;
-        $userSession->id = $record["id"];
-        $userSession->user = $record["user"];
-        $userSession->token = $record["token"];
-        $userSession->sessionOnly = $record["session_only"];
-        $userSession->createDate = $record["create_date"];
-
-        return $userSession;
+        return UserSession::fromRecord($record);
     }
 
     public static function findByUsername()

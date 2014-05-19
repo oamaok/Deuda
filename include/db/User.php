@@ -13,7 +13,7 @@ class User implements IDbRecord {
         if($this->id == -1)
         {
             $this->id = Database::query("INSERT INTO Users
-                (username, password, first_name, last_name, password_salt, create_date, auth_token)
+                (username, password, first_name, last_name, password_salt, create_date)
                 VALUES (?, ?, ?, ?, ?, NOW())",
                 $this->username,
                 $this->password,
@@ -25,7 +25,7 @@ class User implements IDbRecord {
             $user = User::findById($this->id);
             $this->id = $user->id;
             $this->createDate = $user->createDate;
-
+            var_dump($user);
             return $this->id;
         }
         else
@@ -53,27 +53,37 @@ class User implements IDbRecord {
     }
 
     /**
+     * @param $record
+     * @return UserSession
+     */
+    public static function fromRecord($record)
+    {
+        $className = __CLASS__;
+        $object = new $className;
+
+        foreach($record as $key => $value)
+        {
+            $camelCaseColumn = Database::convertCase($key);
+            if(property_exists($object, $camelCaseColumn))
+                $object->$camelCaseColumn = $record[$key];
+        }
+
+        return $object;
+    }
+
+    /**
      * @param $id int
      * @return null|User
      */
     public static function findById($id)
     {
+        echo $id;
         $record = Database::query("SELECT * FROM Users WHERE id = ?", $id);
         if(!$record)
             return null;
         $record = $record[0];
 
-        $user = new User;
-
-        $user->id = $id;
-        $user->username = $record["username"];
-        $user->password = $record["password"];
-        $user->firstName = $record["first_name"];
-        $user->lastName = $record["last_name"];
-        $user->passwordSalt = $record["password_salt"];
-        $user->createDate = $record["create_date"];
-
-        return $user;
+        return User::fromRecord($record);
     }
 
     /**
@@ -87,17 +97,7 @@ class User implements IDbRecord {
             return null;
         $record = $record[0];
 
-        $user = new User;
-
-        $user->id = $record["id"];
-        $user->username = $record["username"];
-        $user->password = $record["password"];
-        $user->firstName = $record["first_name"];
-        $user->lastName = $record["last_name"];
-        $user->passwordSalt = $record["password_salt"];
-        $user->createDate = $record["create_date"];
-
-        return $user;
+        return User::fromRecord($record);
     }
 
     /**
