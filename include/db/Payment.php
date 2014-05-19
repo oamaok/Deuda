@@ -9,7 +9,7 @@ class Payment implements IDbRecord{
         if($this->id == -1)
         {
             $this->id = Database::query("INSERT INTO Payments
-                (from, to, amount, description, location, create_date)
+                (Payments.from, Payments.to, amount, description, location, create_date)
                 VALUES (?, ?, ?, ?, ?, NOW())",
                 $this->from,
                 $this->to,
@@ -26,8 +26,8 @@ class Payment implements IDbRecord{
         }
         else
         {
-            return Database::query("UPDATE Users SET
-                from = ?, to = ?, amount = ?,
+            return Database::query("UPDATE Payments SET
+                Payments.from = ?, Payments.to = ?, amount = ?,
                 description = ?, location = ?
                 WHERE id = ?",
                 $this->from,
@@ -103,7 +103,7 @@ class Payment implements IDbRecord{
         if(gettype($user) != "integer")
             return null;
 
-        $records = Database::query("SELECT * FROM Payments WHERE from = ?", $user);
+        $records = Database::query("SELECT * FROM Payments WHERE Payments.from = ?", $user);
 
         $payments = array();
         foreach($records as $record)
@@ -125,7 +125,7 @@ class Payment implements IDbRecord{
         if(gettype($user) != "integer")
             return null;
 
-        $records = Database::query("SELECT * FROM Payments WHERE to = ?", $user);
+        $records = Database::query("SELECT * FROM Payments WHERE Payments.to = ?", $user);
 
         $payments = array();
         foreach($records as $record)
