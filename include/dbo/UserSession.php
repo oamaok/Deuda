@@ -21,7 +21,7 @@ class UserSession extends DbRecord {
      */
     public static function findByToken($token)
     {
-        $record = UserSession::model()->find("token = ? AND (expire_time > NOW() OR session_only = 1)", $token);
+        $record = UserSession::model()->find("token = ? AND (expireTime > NOW() OR sessionOnly = 1)", $token);
         if(!$record)
             return null;
         return $record[0];
@@ -45,6 +45,7 @@ class UserSession extends DbRecord {
         $session->token = Auth::generateSessionToken($user->passwordSalt);
         $session->sessionOnly = $sessionOnly;
         $session->expireTime = null;
+        $session->createDate = Database::now();
         if($expireTime)
             $session->expireTime = CommonUtil::sqlTimeStamp($expireTime);
         $session->save();
