@@ -15,4 +15,6 @@ class DummyConfig {
     const AUTH_ALGORITHM = "sha256";
 
     const SESSION_COOKIE = "DeudaSession";
+
+    const SITE_BASE = "";
 } 
