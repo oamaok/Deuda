@@ -18,7 +18,7 @@ class DebtGroupMember extends DbRecord {
     {
         return "DebtGroupMembers";
     }
-    
+
     public function givePermissions($permission)
     {
         $this->permissions |= $permission;
@@ -31,5 +31,14 @@ class DebtGroupMember extends DbRecord {
     public function hasPermission($permission)
     {
         return !!($this->permissions & $permission);
+    }
+
+    /**
+     * @param string $className
+     * @return DebtGroupMember
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
     }
 } 

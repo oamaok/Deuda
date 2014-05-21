@@ -51,4 +51,13 @@ class UserSession extends DbRecord {
 
         return $session;
     }
+
+    /**
+     * @param string $className
+     * @return UserSession
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 } 

@@ -14,4 +14,13 @@ class DebtGroup extends DbRecord {
     {
         return "DebtGroups";
     }
+
+    /**
+     * @param string $className
+     * @return DebtGroup
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 }
