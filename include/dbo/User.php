@@ -1,88 +1,24 @@
 <?php
 
-class User implements IDbRecord {
-
-    private $id = -1;
-    public $username, $password, $firstName, $lastName, $passwordSalt, $createDate;
-
-    /**
-     * @return array|bool|int
-     */
-    public function save()
-    {
-        if($this->id == -1)
-        {
-            $this->id = Database::query("INSERT INTO Users
-                (username, password, first_name, last_name, password_salt, create_date)
-                VALUES (?, ?, ?, ?, ?, NOW())",
-                $this->username,
-                $this->password,
-                $this->firstName,
-                $this->lastName,
-                $this->passwordSalt
-            );
-
-            $user = User::findById($this->id);
-            $this->id = $user->id;
-            $this->createDate = $user->createDate;
-
-            return $this->id;
-        }
-        else
-        {
-            return Database::query("UPDATE Users SET
-                username = ?, password = ?, first_name = ?,
-                last_name = ?, password_salt = ?
-                WHERE id = ?",
-                $this->username,
-                $this->password,
-                $this->firstName,
-                $this->lastName,
-                $this->passwordSalt,
-                $this->id
-            );
-        }
-    }
+/**
+ * Class User
+ * @property integer $id
+ * @property string  $username
+ * @property string $password
+ * @property string $firstName
+ * @property string $lastName
+ * @property string $passwordSalt
+ * @property string $createDate
+ *
+ */
+class User extends DbRecord {
 
     /**
-     * @return bool
+     * @return string
      */
-    public function delete()
+    public function tableName()
     {
-        return !!Database::query("DELETE FROM Users WHERE id = ?", $this->id);
-    }
-
-    /**
-     * @param $record
-     * @return UserSession
-     */
-    public static function fromRecord($record)
-    {
-        $className = __CLASS__;
-        $object = new $className;
-
-        foreach($record as $key => $value)
-        {
-            $camelCaseColumn = Database::convertCase($key);
-            if(property_exists($object, $camelCaseColumn))
-                $object->$camelCaseColumn = $record[$key];
-        }
-
-        return $object;
-    }
-
-    /**
-     * @param $id int
-     * @return null|User
-     */
-    public static function findById($id)
-    {
-        $record = Database::query("SELECT * FROM Users WHERE id = ?", $id);
-        if(!$record)
-            return null;
-        $record = $record[0];
-
-        return User::fromRecord($record);
+        return "Users";
     }
 
     /**
@@ -91,12 +27,7 @@ class User implements IDbRecord {
      */
     public static function findByUsername($username)
     {
-        $record = Database::query("SELECT * FROM Users WHERE username = ?", $username);
-        if(!$record)
-            return null;
-        $record = $record[0];
-
-        return User::fromRecord($record);
+        return User::model()->find("username = ?", $username);
     }
 
     /**
@@ -137,7 +68,7 @@ class User implements IDbRecord {
      */
     public static function register($username, $password, $firstName, $lastName)
     {
-        if(Database::query("SELECT 1 FROM Users WHERE username = ?", $username))
+        if(User::findByUsername($username))
             return null;
 
         $user = new User;
@@ -151,5 +82,14 @@ class User implements IDbRecord {
             return null;
 
         return $user;
+    }
+
+    /**
+     * @param string $className
+     * @return User
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
     }
 } 
