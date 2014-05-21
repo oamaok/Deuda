@@ -32,20 +32,24 @@ class Session {
 
     public static function getUser()
     {
-        if(!self::$sessionUser)
+        if(!Session::$sessionUser)
         {
             if(!Session::getSessionCookie())
+            {
                 return null;
+            }
             $sessionToken = Session::getSessionCookie();
 
             $session = UserSession::findByToken($sessionToken);
             if(!$session)
+            {
                 return null;
+            }
 
-            self::$sessionUser = $session->getUser();
+            Session::$sessionUser = $session->getUser();
         }
 
-        return self::$sessionUser;
+        return Session::$sessionUser;
     }
 
     /**
