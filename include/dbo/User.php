@@ -27,15 +27,8 @@ class User extends DbRecord {
      */
     public static function findByUsername($username)
     {
-        return User::model()->find("username = ?", $username);
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
+        $users = User::model()->find("username = ?", $username);
+        return $users[0];
     }
 
     /**
@@ -48,7 +41,6 @@ class User extends DbRecord {
     public static function login($username, $password)
     {
         $user = User::findByUsername($username);
-
         if(!$user)
             return null;
 
