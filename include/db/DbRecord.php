@@ -48,7 +48,6 @@ abstract class DbRecord {
         if(isset(self::$models[get_class($this)]))
         {
             $model = self::$models[get_class($this)];
-            $this->fieldNames = $model->fieldNames;
             $this->fieldValues = $model->fieldValues;
             return $this;
         }
@@ -156,7 +155,6 @@ abstract class DbRecord {
     }
 
     /**
-     * @param array $criteria
      * @return array
      *
      * Finds an object by given criteria.
