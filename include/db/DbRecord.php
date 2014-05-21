@@ -93,7 +93,26 @@ abstract class DbRecord {
     {
         if($this->primaryKey)
         {
-            $query = "UPDATE " . $this->tableName();
+            $values = "";
+            foreach($this->fieldValues as $field => $value)
+            {
+                if($field == $this->getPrimaryKeyColumn())
+                    continue;
+                $values .= "," . $field . "=?";
+                array_push($arguments, $value);
+            }
+            // trim out the preceding comma
+            $values = substr($values, 1);
+            $table = $this->tableName();
+            $condition = $this->getPrimaryKeyColumn() . "=?";
+            array_push($arguments, $this->primaryKey);
+            $query = "UPDATE $table SET $values WHERE $condition";
+            array_unshift($arguments, $query);
+
+            $primaryKey = call_user_func_array("Database::query", $arguments);
+            $updated = $this->findByPk($primaryKey);
+            $this->copy($updated);
+            return $primaryKey;
         }
         else
         {
@@ -108,8 +127,11 @@ abstract class DbRecord {
                 $values .= ",?";
                 array_push($arguments, $value);
             }
+
+            // trim out the preceding commas
             $columns = substr($columns, 1);
             $values = substr($values, 1);
+
             $table = $this->tableName();
             $query = "INSERT INTO $table ($columns) VALUES ($values)";
             array_unshift($arguments, $query);
@@ -117,6 +139,7 @@ abstract class DbRecord {
             $primaryKey = call_user_func_array("Database::query", $arguments);
             $updated = $this->findByPk($primaryKey);
             $this->copy($updated);
+            return $primaryKey;
         }
     }
 
@@ -129,6 +152,8 @@ abstract class DbRecord {
     {
         foreach($object->fieldValues as $field => $value)
         {
+            if($field == $this->getPrimaryKeyColumn())
+                $this->primaryKey = $value;
             $this->fieldValues[$field] = $value;
         }
     }
