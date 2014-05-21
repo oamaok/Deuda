@@ -19,11 +19,20 @@ class DebtGroupMember extends DbRecord {
         return "DebtGroupMembers";
     }
 
+    public static function findByGroup($group)
+    {
+        return DebtGroupMember::model()->find("group = ?", $group);
+    }
+
     public function givePermissions($permission)
     {
         $this->permissions |= $permission;
     }
 
+    public function removePermissions($permission)
+    {
+        $this->permissions &= ~$permission;
+    }
     /**
      * @param $permission
      * @return bool
