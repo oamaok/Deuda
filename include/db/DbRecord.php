@@ -161,24 +161,18 @@ abstract class DbRecord {
      *
      * Finds an object by given criteria.
      */
-    public function find($criteria = array())
+    public function find()
     {
         $query = "SELECT * FROM " . $this->tableName();
         $arguments = array();
-        if($criteria)
+
+        if(func_num_args())
         {
-            $query .= " WHERE ";
-            foreach($criteria as $field => $value)
+            $query .= " WHERE " . func_get_arg(0);
+
+            for($i = 1; $i < func_num_args(); $i++)
             {
-                if($arguments)
-                    $query .= " AND ";
-                array_push($arguments, $value);
-                if(!array_key_exists($field, $this->fieldNames))
-                {
-                    Logger::log("Column '%s' doesn't exist in table %s!", $field, $this->tableName());
-                    return array();
-                }
-                $query .= $this->fieldNames[$field] . " = ?";
+                array_push($arguments, func_get_arg($i));
             }
         }
         array_unshift($arguments, $query);
