@@ -33,11 +33,6 @@ abstract class DbRecord {
     /**
      * @var array
      */
-    private $fieldNames = array();
-
-    /**
-     * @var array
-     */
     private $fieldValues = array();
 
     /**
@@ -63,9 +58,7 @@ abstract class DbRecord {
         {
             $field = $column["Field"];
             $default = $column["Default"];
-            $fieldCamelCase = Database::convertCase($field);
-            $this->fieldNames[$fieldCamelCase] = $field;
-            $this->fieldValues[$fieldCamelCase] = $default;
+            $this->fieldValues[$field] = $default;
         }
         $this->getPrimaryKeyColumn();
         self::$models[get_class($this)] = $this;
@@ -112,7 +105,7 @@ abstract class DbRecord {
             {
                 if($field == $this->getPrimaryKeyColumn())
                     continue;
-                $columns .= "," . $this->fieldNames[$field];
+                $columns .= "," . $field;
                 $values .= ",?";
                 array_push($arguments, $value);
             }
@@ -204,12 +197,11 @@ abstract class DbRecord {
         $className = get_called_class();
         $object = new $className;
 
-        foreach($record as $key => $value)
+        foreach($record as $field => $value)
         {
-            $camelCaseColumn = Database::convertCase($key);
-            if(array_key_exists($camelCaseColumn, $object->fieldValues))
+            if(array_key_exists($field, $object->fieldValues))
             {
-                $object->$camelCaseColumn = $record[$key];
+                $object->$field = $record[$field];
             }
         }
 
@@ -266,7 +258,7 @@ abstract class DbRecord {
             {
                 if($column["Key"] == "PRI")
                 {
-                    $this->primaryKeyColumn = Database::convertCase($column["Field"]);
+                    $this->primaryKeyColumn = $column["Field"];
                     break;
                 }
             }
