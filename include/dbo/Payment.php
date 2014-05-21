@@ -1,78 +1,22 @@
 <?php
 
-class Payment implements IDbRecord{
-    private $id = -1;
-    public $from, $to, $amount, $description, $location, $createDate;
+/**
+ * Class Payment
+ * @property integer $id
+ * @property integer $from
+ * @property integer $to
+ * @property double $amount
+ * @property string $description
+ * @property integer $location
+ * @property string $createDate
+ */
+class Payment extends DbRecord {
 
-    public function save()
+    public function tableName()
     {
-        if($this->id == -1)
-        {
-            $this->id = Database::query("INSERT INTO Payments
-                (Payments.from, Payments.to, amount, description, location, create_date)
-                VALUES (?, ?, ?, ?, ?, NOW())",
-                $this->from,
-                $this->to,
-                $this->amount,
-                $this->description,
-                $this->location
-            );
-
-            $payment = Payment::findById($this->id);
-            $this->id = $payment->id;
-            $this->createDate = $payment->createDate;
-
-            return $this->id;
-        }
-        else
-        {
-            return Database::query("UPDATE Payments SET
-                Payments.from = ?, Payments.to = ?, amount = ?,
-                description = ?, location = ?
-                WHERE id = ?",
-                $this->from,
-                $this->to,
-                $this->amount,
-                $this->description,
-                $this->location,
-                $this->id
-            );
-        }
+        return "Payments";
     }
 
-    public function delete()
-    {
-        return Database::query("DELETE FROM Payments WHERE id = ?", $this->id);
-    }
-
-    /**
-     * @param $record
-     * @return mixed
-     */
-    public static function fromRecord($record)
-    {
-        $className = __CLASS__;
-        $object = new $className;
-
-        foreach($record as $key => $value)
-        {
-            $camelCaseColumn = Database::convertCase($key);
-            if(property_exists($object, $camelCaseColumn))
-                $object->$camelCaseColumn = $record[$key];
-        }
-
-        return $object;
-    }
-
-    public static function findById($id)
-    {
-        $record = Database::query("SELECT * FROM Payments WHERE id = ?", $id);
-        if(!$record)
-            return null;
-        $record = $record[0];
-
-        return Payment::fromRecord($record);
-    }
 
     /**
      * @param $from int
@@ -97,13 +41,13 @@ class Payment implements IDbRecord{
     {
         if($user instanceof User)
         {
-            $user = $user->getId();
+            $user = $user->id;
         }
 
         if(gettype($user) != "integer")
             return null;
 
-        $records = Database::query("SELECT * FROM Payments WHERE Payments.from = ?", $user);
+        $records = Payment::model()->find("Payments.from = ?", $user);
 
         $payments = array();
         foreach($records as $record)
@@ -119,13 +63,13 @@ class Payment implements IDbRecord{
     {
         if($user instanceof User)
         {
-            $user = $user->getId();
+            $user = $user->id;
         }
 
         if(gettype($user) != "integer")
-            return null;
+            return array();
 
-        $records = Database::query("SELECT * FROM Payments WHERE Payments.to = ?", $user);
+        $records = Payment::model()->find("Payments.to = ?", $user);
 
         $payments = array();
         foreach($records as $record)
@@ -135,5 +79,10 @@ class Payment implements IDbRecord{
         }
 
         return $payments;
+    }
+
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
     }
 } 
