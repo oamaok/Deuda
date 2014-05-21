@@ -22,4 +22,9 @@ class CommonUtil {
     {
         return date("Y-m-d H:i:s", $timestamp);
     }
+
+    public static function redirect($url)
+    {
+        header("Location: $url");
+    }
 } 
