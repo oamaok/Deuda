@@ -23,12 +23,14 @@ class User extends DbRecord {
 
     /**
      * @param $username string
-     * @return mixed
+     * @return User
      */
     public static function findByUsername($username)
     {
-        $users = User::model()->find("username = ?", $username);
-        return $users[0];
+        $user = User::model()->find("username = ?", $username);
+        if(!$user)
+            return null;
+        return $user[0];
     }
 
     /**
