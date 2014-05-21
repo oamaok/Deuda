@@ -34,6 +34,20 @@ class User extends DbRecord {
     }
 
     /**
+     * @param $search
+     * @return array
+     */
+    public static function search($search)
+    {
+        $search = "%$search%";
+        return User::model()->find(
+            "username LIKE ? OR firstName LIKE ? OR lastName LIKE ?",
+            $search,
+            $search,
+            $search
+        );
+    }
+    /**
      * @param $username string
      * @param $password string
      * @return mixed
