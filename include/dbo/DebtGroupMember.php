@@ -1,8 +1,13 @@
 <?php
 
 class DebtGroupMember implements IDbRecord {
-    private $id = -1;
 
+    const PERMISSION_INVITE = 1;
+    const PERMISSION_KICK = 2;
+    const PERMISSION_OP = 4;
+
+    private $id = -1;
+    public $group, $user, $permissions = 0, $createDate;
     public function save()
     {
 
@@ -32,4 +37,17 @@ class DebtGroupMember implements IDbRecord {
         return $object;
     }
 
+    public function givePermissions($permission)
+    {
+        $this->permissions |= $permission;
+    }
+
+    /**
+     * @param $permission
+     * @return bool
+     */
+    public function hasPermission($permission)
+    {
+        return !!($this->permissions & $permission);
+    }
 } 

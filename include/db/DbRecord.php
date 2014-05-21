@@ -45,11 +45,12 @@ abstract class DbRecord {
 
     public function __construct()
     {
-        if(isset(self::$models[get_class($this)]))
+        $className = get_class($this);
+        if(isset(self::$models[$className]))
         {
-            $model = self::$models[get_class($this)];
+            $model = self::$models[$className];
             $this->fieldValues = $model->fieldValues;
-            return $this;
+            return;
         }
 
         $columns = $this->getTableStructure();
@@ -60,8 +61,7 @@ abstract class DbRecord {
             $this->fieldValues[$field] = $default;
         }
         $this->getPrimaryKeyColumn();
-        self::$models[get_class($this)] = $this;
-        return $this;
+        self::$models[$className] = $this;
     }
 
     public function __get($var)

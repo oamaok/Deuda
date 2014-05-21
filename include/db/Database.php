@@ -2,8 +2,15 @@
 
 class Database {
 
-    /** @var $mysqli mysqli */
+    /**
+     * @var mysqli
+     */
     private static $mysqli;
+
+    /**
+     * @var array
+     */
+    private static $tables;
 
     /**
      * @return mixed
@@ -108,6 +115,24 @@ class Database {
     }
 
     /**
+     * @return array
+     */
+    public static function getTables()
+    {
+        if(!isset(Database::$tables))
+        {
+            $tables = Database::query("SHOW TABLES");
+            Database::$tables = array();
+            foreach($tables as $table)
+            {
+                array_push(Database::$tables, array_pop($table));
+            }
+        }
+
+        return Database::$tables;
+    }
+
+    /**
      * @param $stmt mysqli_stmt
      * @return mixed
      */
@@ -190,5 +215,10 @@ class Database {
         $columnName = lcfirst($columnName);
 
         return $columnName;
+    }
+
+    public static function now()
+    {
+        return date("Y-m-d H:i:s");
     }
 } 

@@ -66,6 +66,10 @@ class UserSession implements IDbRecord {
         return $object;
     }
 
+    /**
+     * @param $token
+     * @return UserSession
+     */
     public static function findByToken($token)
     {
         $record = Database::query("SELECT * FROM UserSessions

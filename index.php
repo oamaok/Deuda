@@ -2,6 +2,4 @@
 
 require_once "include/init.php";
 
-$ret = User::register("oamaok", "ebin :D", "Teemu", "Pääkkönen");
-
-var_dump(User::login("",""));
+var_dump(User::search("Pää"));
