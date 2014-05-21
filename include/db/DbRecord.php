@@ -122,7 +122,6 @@ abstract class DbRecord {
             $query = "INSERT INTO $table ($columns) VALUES ($values)";
             array_unshift($arguments, $query);
 
-            var_dump($arguments);
             $primaryKey = call_user_func_array("Database::query", $arguments);
             $updated = $this->findByPk($primaryKey);
             $this->copy($updated);
@@ -190,7 +189,7 @@ abstract class DbRecord {
             }
         }
         array_unshift($arguments, $query);
-        var_dump($arguments);
+
         $records = call_user_func_array("Database::query", $arguments);
         $objects = array();
         foreach($records as $record)
