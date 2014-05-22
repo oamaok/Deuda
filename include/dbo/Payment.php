@@ -47,16 +47,7 @@ class Payment extends DbRecord {
         if(gettype($user) != "integer")
             return null;
 
-        $records = Payment::model()->find("Payments.from = ?", $user);
-
-        $payments = array();
-        foreach($records as $record)
-        {
-            $payment = Payment::fromRecord($record);
-            array_push($payments, $payment);
-        }
-
-        return $payments;
+        return Payment::model()->find("Payments.from = ?", $user);
     }
 
     public static function getPaymentsToUser($user)
@@ -69,16 +60,7 @@ class Payment extends DbRecord {
         if(gettype($user) != "integer")
             return array();
 
-        $records = Payment::model()->find("Payments.to = ?", $user);
-
-        $payments = array();
-        foreach($records as $record)
-        {
-            $payment = Payment::fromRecord($record);
-            array_push($payments, $payment);
-        }
-
-        return $payments;
+        return Payment::model()->find("Payments.to = ?", $user);
     }
 
     public static function model($className = __CLASS__)

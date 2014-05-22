@@ -168,3 +168,14 @@ body {
     right: 17px;
     color: #ccc;
 }
+
+.debt-positive
+{
+    color: #3c763d;
+}
+
+
+.debt-negative
+{
+    color: #a94442;
+}
