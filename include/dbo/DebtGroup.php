@@ -25,6 +25,11 @@ class DebtGroup extends DbRecord {
         return User::model()->findByPk($this->creator);
     }
 
+    public function getPayments()
+    {
+        return Payment::model()->find("Payments.group = ?", $this->id);
+    }
+
     /**
      * @param string $className
      * @return DebtGroup

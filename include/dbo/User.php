@@ -97,6 +97,12 @@ class User extends DbRecord {
     {
         return $this->firstName . " " . $this->lastName;
     }
+
+    public function getGroups()
+    {
+        return DebtGroup::model()->find("id IN (SELECT DebtGroupMembers.group FROM DebtGroupMembers WHERE user = ?)", $this->id);
+    }
+
     /**
      * @param string $className
      * @return User
@@ -105,4 +111,5 @@ class User extends DbRecord {
     {
         return parent::model($className);
     }
+
 } 

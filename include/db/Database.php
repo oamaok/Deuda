@@ -89,7 +89,7 @@ class Database {
         $stmt = $mysqli->prepare(func_get_arg(0));
         if(!$stmt)
         {
-            Logger::log('$mysqli->prepare failed (%s).', $mysqli->error);
+            Logger::log('$mysqli->prepare failed (%s) (query="%s").', $mysqli->error, func_get_arg(0));
             return false;
         }
 
