@@ -43,6 +43,10 @@ body {
     border-top-right-radius: 0;
 }
 
+.register-errors
+{
+    color: #a94442;
+}
 .logged-as
 {
     color: #ccc;

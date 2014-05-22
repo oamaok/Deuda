@@ -86,7 +86,7 @@ class User extends DbRecord {
         $user->firstName = $firstName;
         $user->lastName = $lastName;
         $user->createDate = Database::now();
-        
+
         if(!$user->save())
             return null;
 
