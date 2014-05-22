@@ -85,13 +85,18 @@ class User extends DbRecord {
         $user->password = Auth::hashPassword($password, $user->passwordSalt);
         $user->firstName = $firstName;
         $user->lastName = $lastName;
-
+        $user->createDate = Database::now();
+        
         if(!$user->save())
             return null;
 
         return $user;
     }
 
+    public function getFullName()
+    {
+        return $this->firstName . " " . $this->lastName;
+    }
     /**
      * @param string $className
      * @return User

@@ -69,8 +69,12 @@ class Deuda {
             $username = $_POST["username"];
             $password = $_POST["password"];
             $sessionOnly = !isset($_POST["remember"]);
-            Session::login($username, $password, $sessionOnly);
-            CommonUtil::redirect(Config::SITE_BASE);
+            if(Session::login($username, $password, $sessionOnly))
+            {
+                // only redirect if login was successful
+                CommonUtil::redirect(Config::SITE_BASE);
+                return;
+            }
         }
         Deuda::render("login");
     }
@@ -81,6 +85,19 @@ class Deuda {
         {
             CommonUtil::redirect(Config::SITE_BASE);
             return;
+        }
+        if(isset($_POST["username"]))
+        {
+            $username = $_POST["username"];
+            $password = $_POST["password"];
+            $firstName = $_POST["firstName"];
+            $lastName = $_POST["lastName"];
+
+            if(User::register($username, $password, $firstName, $lastName))
+            {
+                CommonUtil::redirect("login");
+                return;
+            }
         }
 
         Deuda::render("register");

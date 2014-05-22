@@ -24,7 +24,7 @@ class Session {
     private static $manualToken = null;
 
     /**
-     * @return mixed
+     * @return User
      *
      * Fetches the session user if one is logged in.
      * Otherwise returns null.

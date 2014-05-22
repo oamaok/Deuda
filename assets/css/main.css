@@ -42,3 +42,10 @@ body {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
+
+.logged-as
+{
+    color: #ccc;
+    float:right;
+    margin-top: 15px;
+}
