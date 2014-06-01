@@ -31,7 +31,7 @@ foreach($debts as $user => $amount)
         $debtTableContents .= "<td class='debt-negative'>";
     else
         $debtTableContents .= "<td class='debt-positive'>";
-    $debtTableContents .= sprintf("%0.2f€", $amount) . "</td>";
+    $debtTableContents .= sprintf("<b>%0.2f€</b>", $amount) . "</td>";
     $debtTableContents .= "<td><a href=\"history/" . $user . "\">View history</a></div>";
     $debtTableContents .= "</tr>";
 }
@@ -50,62 +50,68 @@ $paymentsTableContents = "";
 foreach($userPayments as $payment)
 {
     $paymentsTableContents .= "<tr>";
-    $paymentsTableContents .= "<td>" . $payment->id . "</td>";
     $paymentsTableContents .= "<td>" . User::model()->findByPk($payment->from)->getFullName() . "</td>";
     $paymentsTableContents .= "<td>" . User::model()->findByPk($payment->to)->getFullName() . "</td>";
     $paymentsTableContents .= "<td>" . sprintf("%0.2f€", $payment->amount) . "</td>";
-    $paymentsTableContents .= "<td>" . $payment->createDate . "</td>";
+    $time = strtotime($payment->createDate);
+    $fullDate = date("d.m.Y H:i", $time);
+    $displayTime = $fullDate;
+
+    // check if the event happened today
+    if(date('Ymd') == date('Ymd', $time))
+    {
+        $displayTime = "Today " . date("H:i", $time);
+    }
+    // check if the event happened yesterday
+    elseif(date('Ymd', time() - 24 * 60 * 60) == date('Ymd', $time))
+    {
+        $displayTime = "Yesterday " . date("H:i", $time);
+    }
+    // check if the event happened within a week
+    elseif(time() - 7 * 24 * 60 * 60 < $time)
+    {
+        $displayTime = "Last " . date("l", $time) . " " . date("H:i", $time);
+    }
+    $paymentsTableContents .= "<td title=\"$fullDate\">$displayTime</td>";
     $paymentsTableContents .= "</tr>";
 }
 
 
 
 ?>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
-            <ul class="nav nav-sidebar">
-                <li class="active"><a href="#">Overview</a></li>
-                <li><a href="#">Groups</a></li>
-                <li><a href="#">My Debts</a></li>
-                <li><a href="#">Profile</a></li>
-            </ul>
-        </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h1 class="page-header">Dashboard</h1>
-            <h2 class="sub-header">Your balance</h2>
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Sum</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?= $debtTableContents ?>
-                    </tbody>
-                </table>
-            </div>
-            <span class="debt-total-info"><?= $debtTotalInfo ?></span>
-            <h2 class="sub-header">Recent payments</h2>
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>From</th>
-                        <th>To</th>
-                        <th>Amount</th>
-                        <th>Date</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?= $paymentsTableContents ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <h1 class="page-header">Dashboard</h1>
+    <h2 class="sub-header">Your balance</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>User</th>
+                <th>Sum</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <?= $debtTableContents ?>
+            </tbody>
+        </table>
+    </div>
+    <span class="debt-total-info"><?= $debtTotalInfo ?></span>
+    <h2 class="sub-header">Recent payments</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>From</th>
+                <th>To</th>
+                <th>Amount</th>
+                <th>Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?= $paymentsTableContents ?>
+            </tbody>
+        </table>
     </div>
 </div>

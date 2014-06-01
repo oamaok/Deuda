@@ -3,14 +3,18 @@
 class Deuda {
     public static $pageTitle = "";
     public static $outputBuffer = "";
+    private static $activePage = "";
+
     private static $pages = array(
         "index" => "index",
-        "u" => "user",
-        "g" => "group",
-        "p" => "payment",
+        "user" => "user",
+        "groups" => "groups",
+        "debts" => "debts",
+        "profile" => "profile",
         "login" => "login",
         "register" => "register",
         "logout" => "logout",
+        "search" => "search",
     );
     public static function run()
     {
@@ -27,16 +31,22 @@ class Deuda {
 
         if(!array_key_exists($page, Deuda::$pages))
         {
-            /*
-             * TODO: display 404 error
-             */
+            header("HTTP/1.1 404 Not Found");
             return;
         }
+
+        Deuda::$activePage = $page;
         $methodName = "action" . ucfirst(Deuda::$pages[$page]);
 
         if(method_exists("Deuda", $methodName))
             call_user_func("Deuda::$methodName", $param);
     }
+
+    public static function getActivePage()
+    {
+        return Deuda::$activePage;
+    }
+
 
     public static function render($view, $arguments = array())
     {
@@ -68,6 +78,56 @@ class Deuda {
             return;
         }
         Deuda::render("index");
+    }
+
+    public static function actionUser($id)
+    {
+        if(!Session::getUser())
+        {
+            CommonUtil::redirect("login");
+            return;
+        }
+        Deuda::render("user", array("userId" => $id));
+    }
+
+    public static function actionGroups()
+    {
+        if(!Session::getUser())
+        {
+            CommonUtil::redirect("login");
+            return;
+        }
+        Deuda::render("groups");
+    }
+
+    public static function actionGroup($id)
+    {
+        if(!Session::getUser())
+        {
+            CommonUtil::redirect("login");
+            return;
+        }
+        Deuda::render("group", array("groupId" => $id));
+    }
+
+    public static function actionDebts()
+    {
+        if(!Session::getUser())
+        {
+            CommonUtil::redirect("login");
+            return;
+        }
+        Deuda::render("debts");
+    }
+
+    public static function actionProfile()
+    {
+        if(!Session::getUser())
+        {
+            CommonUtil::redirect("login");
+            return;
+        }
+        Deuda::render("profile");
     }
 
     public static function actionLogin()
@@ -166,6 +226,29 @@ class Deuda {
             )
         );
     }
+    public static function actionSearch($search)
+    {
+        header("Content-type: text/json");
+        if(!$search)
+        {
+            echo json_encode(array());
+            return;
+        }
+        $users = User::search($search);
+        $results = array();
+        foreach($users as $user)
+        {
+            $result = new stdClass();
+            $result->type = "user";
+            $result->id = $user->id;
+            $result->username = $user->username;
+            $result->firstName = $user->firstName;
+            $result->lastName = $user->lastName;
+
+            array_push($results, $result);
+        }
+        echo json_encode($results);
+    }
 
     public static function actionLogout()
     {
@@ -181,6 +264,21 @@ class Deuda {
             require "view" . DIRECTORY_SEPARATOR . "navigation.php";
             return ob_get_clean();
         }
+
+        return "";
     }
+
+    public static function getSidebar()
+    {
+        if(Session::getUser())
+        {
+            ob_start();
+            require "view" . DIRECTORY_SEPARATOR . "sidebar.php";
+            return ob_get_clean();
+        }
+
+        return "";
+    }
+
 
 } 

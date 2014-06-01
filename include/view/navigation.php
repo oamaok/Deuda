@@ -16,8 +16,15 @@
             <span class="logged-as">Logged in as <b><?= Session::getUser()->getFullName() ?></b></span>
 
             <form class="navbar-form navbar-right form-group has-feedback">
-                <input type="text" class="form-control navbar-search" placeholder="Search users and groups">
+                <input type="text" class="form-control navbar-search" id="search" autocomplete="off" placeholder="Search users and groups">
                 <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                <div id="search-results" class="search-results" style="position: absolute;">
+                    <a class="search-result" id="search-result-template" style="display: none">
+                        <img src="assets/img/profile.gif" class="search-avatar">
+                        <div class="search-username"></div>
+                        <div class="search-fullname"></div>
+                    </a>
+                </div>
             </form>
         </div>
     </div>

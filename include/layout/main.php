@@ -14,9 +14,14 @@
 </head>
 <body>
 <?= Deuda::getNavigation() ?>
-<?= Deuda::$outputBuffer ?>
-<script></script>
+<div class="container-fluid">
+    <div class="row">
+        <?= Deuda::getSidebar() ?>
+        <?= Deuda::$outputBuffer ?>
+    </div>
+</div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="assets/js/main.js"></script>
 </body>
 </html>
