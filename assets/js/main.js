@@ -9,6 +9,7 @@ $(document).ready(function(){
 var searchTimeout;
 var searchResultTemplate;
 var searchResultFocus = -1;
+
 function doSearch(e)
 {
     var results = $(".search-result");
@@ -39,8 +40,9 @@ function search()
 {
     var query = $("#search").val();
     $.get("search/" + query, function(response){
-        $("#search-results").empty();
-        console.log(response);
+        var searchResults = $("#search-results");
+        searchResults.empty();
+
         var result;
         for(var i = 0; i < response.length; i++)
         {
@@ -54,7 +56,7 @@ function search()
             var lastName = response[i].lastName.replace(reg, "<b>$1</b>");
             result.find(".search-username").html(username);
             result.find(".search-fullname").html(firstName + " " + lastName);
-            $("#search-results").append(result);
+            searchResults.append(result);
         }
         result.attr("class", result.attr("class") + " bottom");
     });
