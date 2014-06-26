@@ -180,7 +180,7 @@ abstract class DbRecord {
     }
 
     /**
-     * @return array
+     * @return object
      *
      * Finds an object by given criteria.
      */
@@ -198,9 +198,44 @@ abstract class DbRecord {
                 array_push($arguments, func_get_arg($i));
             }
         }
+        // only return the first matching object
+        $query .= " LIMIT 1";
         array_unshift($arguments, $query);
 
         $records = call_user_func_array("Database::query", $arguments);
+
+        if(!$records)
+            return null;
+
+        return $records[0];
+    }
+
+    /**
+     * @return array
+     *
+     * Finds all objects by given criteria.
+     */
+    public function findAll()
+    {
+        $query = "SELECT * FROM " . $this->tableName();
+        $arguments = array();
+
+        if(func_num_args())
+        {
+            $query .= " WHERE " . func_get_arg(0);
+
+            for($i = 1; $i < func_num_args(); $i++)
+            {
+                array_push($arguments, func_get_arg($i));
+            }
+        }
+        array_unshift($arguments, $query);
+
+        $records = call_user_func_array("Database::query", $arguments);
+
+        if(!$records)
+            return null;
+
         $objects = array();
         foreach($records as $record)
         {
