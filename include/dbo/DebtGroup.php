@@ -27,7 +27,7 @@ class DebtGroup extends DbRecord {
 
     public function getPayments()
     {
-        return Payment::model()->find("Payments.group = ?", $this->id);
+        return Payment::model()->findAll("Payments.group = ?", $this->id);
     }
 
     /**

@@ -24,7 +24,7 @@ class UserSession extends DbRecord {
         $record = UserSession::model()->find("token = ? AND (expireTime > NOW() OR sessionOnly = 1)", $token);
         if(!$record)
             return null;
-        return $record[0];
+        return $record;
     }
 
     public function getUser()

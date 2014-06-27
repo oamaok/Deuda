@@ -30,7 +30,7 @@ class User extends DbRecord {
         $user = User::model()->find("username = ?", $username);
         if(!$user)
             return null;
-        return $user[0];
+        return $user;
     }
 
     /**
@@ -100,7 +100,7 @@ class User extends DbRecord {
 
     public function getGroups()
     {
-        return DebtGroup::model()->find("id IN (SELECT DebtGroupMembers.group FROM DebtGroupMembers WHERE user = ?)", $this->id);
+        return DebtGroup::model()->findAll("id IN (SELECT DebtGroupMembers.group FROM DebtGroupMembers WHERE user = ?)", $this->id);
     }
 
     /**
