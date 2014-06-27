@@ -207,7 +207,7 @@ abstract class DbRecord {
         if(!$records)
             return null;
 
-        return $records[0];
+        return $this->fromRecord($records[0]);
     }
 
     /**
